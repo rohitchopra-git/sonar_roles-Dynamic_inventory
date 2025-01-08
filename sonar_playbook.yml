@@ -1,0 +1,7 @@
+---
+  - name: Installing sonarqube and it's dependencies
+    hosts: all
+    become: true
+    remote_user: ubuntu
+    roles:
+      - sonarqube_role

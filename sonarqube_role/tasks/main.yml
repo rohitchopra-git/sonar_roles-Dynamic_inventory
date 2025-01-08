@@ -1,0 +1,14 @@
+---
+# tasks file for sonarqube_role
+- import_tasks: install_postgresql.yml
+- import_tasks: install_sonarqube.yml
+
+- name: Apply SonarQube configuration
+  ansible.builtin.template:
+    src: "sonar.properties.j2"
+    dest: "{{ sonarqube_install_dir }}/conf/sonar.properties"
+    owner: "{{ sonarqube_user }}"
+    group: "{{ sonarqube_user }}"
+    mode: '0644'
+  notify: restart sonarqube
+
