@@ -1,5 +1,0 @@
----
-- name: restart sonarqube
-  service:
-    name: sonar
-    state: restarted
