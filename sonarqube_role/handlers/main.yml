@@ -1,9 +1,0 @@
----
-# handlers file for sonarqube_role
-
-- name: restart sonarqube
-  ansible.builtin.systemd:
-    name: sonarqube
-    state: restarted
-    enabled: true
-

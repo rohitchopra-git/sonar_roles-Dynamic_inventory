@@ -1,6 +1,0 @@
----
-# vars file for sonarqube_role
-# OS-specific package manager
-package_manager: "{{ 'apt' if ansible_os_family == 'Debian' else 'yum' }}"
-postgresql_pkg_name: "{{ 'postgresql' if ansible_os_family == 'Debian' else 'postgresql-server' }}"
-
