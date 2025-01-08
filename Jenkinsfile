@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/YugeshKumar01/kafka_roles-Dynamic_inventory.git'
+                git branch: 'main', url: 'https://github.com/rohitchopra-git/sonar_roles-Dynamic_inventory.git'
             }
         }
     
@@ -19,16 +19,16 @@ pipeline {
             }
         }
         
-        stage('run kafka role') {
+        stage('run sonarqube role') {
             steps {
                 withCredentials([file(credentialsId: 'ssh-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                     // Ensure the private key has 400 permissions
                     sh 'chmod 400 $SSH_PRIVATE_KEY'
                     // Specify the correct SSH user (e.g., "ubuntu" for Ubuntu-based EC2 instances)
                     sh 'ansible all -i aws_ec2.yml -u ubuntu -m ping --private-key $SSH_PRIVATE_KEY'
-                    // Run the Kafka Ansible playbook with the Kafka role applied
-                    sh 'ansible-playbook -i aws_ec2.yml kafka_playbook.yml --private-key $SSH_PRIVATE_KEY'
-                    //sh 'ansible-playbook -i aws_ec2.yml kafka_playbook.yml --private-key $SSH_PRIVATE_KEY -vvv'
+                    // Run the sonar Ansible playbook with the sonar role applied
+                    sh 'ansible-playbook -i aws_ec2.yml sonar_playbook.yml --private-key $SSH_PRIVATE_KEY'
+                    //sh 'ansible-playbook -i aws_ec2.yml sonar_playbook.yml --private-key $SSH_PRIVATE_KEY -vvv'
 
                 }
             }
