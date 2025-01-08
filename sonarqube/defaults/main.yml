@@ -1,0 +1,4 @@
+---
+java_version: "17"
+sonarqube_version: "9.9.0.65466"
+sonarqube_user_password: "sonar"

@@ -1,0 +1,133 @@
+---
+- name: Update and upgrade packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install required dependencies
+  apt:
+    name:
+      - wget
+      - unzip
+      - openjdk-{{ java_version }}-jdk
+      - openjdk-{{ java_version }}-jre
+    state: present
+
+- name: Add PostgreSQL repository and key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add PostgreSQL repository
+  copy:
+    dest: /etc/apt/sources.list.d/pgdg.list
+    content: "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main"
+
+- name: Update package list
+  apt:
+    update_cache: yes
+
+- name: Install PostgreSQL
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+    state: present
+
+- name: Start and enable PostgreSQL service
+  systemd:
+    name: postgresql
+    enabled: yes
+    state: started
+
+- name: Set PostgreSQL password for user postgres
+  postgresql_user:
+    name: postgres
+    password: "{{ postgresql_password }}"
+    state: present
+
+- name: Create SonarQube user and database
+  postgresql_user:
+    name: sonar
+    password: "{{ sonarqube_user_password }}"
+    state: present
+  postgresql_db:
+    name: sonarqube
+    owner: sonar
+    state: present
+  postgresql_privilege:
+    user: sonar
+    database: sonarqube
+    table: "*"
+    type: ALL
+    state: present
+
+- name: Download SonarQube
+  get_url:
+    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonarqube_version }}.zip
+    dest: /tmp/sonarqube.zip
+
+- name: Extract SonarQube
+  unarchive:
+    src: /tmp/sonarqube.zip
+    dest: /opt
+    extra_opts: unzip,keep_existing
+
+- name: Move SonarQube directory
+  file:
+    src: /opt/sonarqube-{{ sonarqube_version }}
+    dest: /opt/sonarqube
+    state: link
+
+- name: Create SonarQube user and group
+  group:
+    name: sonar
+    state: present
+  user:
+    name: sonar
+    group: sonar
+    home: /opt/sonarqube
+    shell: /bin/bash
+    state: present
+
+- name: Configure SonarQube properties
+  lineinfile:
+    path: /opt/sonarqube/conf/sonar.properties
+    create: yes
+    line: "{{ item }}"
+  with_items:
+    - sonar.jdbc.username=sonar
+    - sonar.jdbc.password={{ sonarqube_user_password }}
+    - sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+
+- name: Configure SonarQube service script
+  lineinfile:
+    path: /opt/sonarqube/bin/linux-x86-64/sonar.sh
+    append: yes
+    line: RUN_AS_USER=sonar
+
+- name: Create SonarQube systemd service
+  template:
+    src: sonar.service.j2
+    dest: /etc/systemd/system/sonar.service
+
+- name: Reload systemd daemon
+  systemd:
+    name: daemon-reload
+
+- name: Start and enable SonarQube service
+  systemd:
+    name: sonar
+    enabled: yes
+    state: started
+
+- name: Check SonarQube service status
+  systemd:
+    name: sonar
+    state: started
+
+- name: Test SonarQube setup
+  uri:
+    url: http://localhost:9000
+    return_code: 200
+  delegate_to: localhost
