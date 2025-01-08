@@ -4,4 +4,4 @@
     become: true
     remote_user: ubuntu
     roles:
-      - sonarqrole
+      - sonarqube
