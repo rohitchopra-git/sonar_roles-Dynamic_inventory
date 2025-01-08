@@ -1,0 +1,84 @@
+---
+# tasks file for sonar-role
+---
+- name: Ensure required packages are installed
+  package:
+    name: "{{ (ansible_os_family == 'RedHat') | ternary(redhat_packages, ubuntu_packages) }}"
+    state: present
+
+- name: Initialize PostgreSQL database (RedHat)
+  command: "/usr/bin/postgresql-setup --initdb"
+  when: ansible_os_family == 'RedHat'
+  ignore_errors: true
+
+- name: Start and enable PostgreSQL service
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Configure PostgreSQL
+  block:
+    - name: Set PostgreSQL password
+      command: psql -c "ALTER USER {{ postgres_user }} PASSWORD '{{ postgres_password }}';"
+      become_user: postgres
+
+    - name: Create SonarQube database and user
+      command: >
+        psql -c "CREATE USER {{ sonar_user }} WITH ENCRYPTED PASSWORD '{{ sonar_password }}';"
+      become_user: postgres
+
+    - name: Grant privileges to SonarQube user
+      command: >
+        psql -c "CREATE DATABASE {{ sonar_db }} OWNER {{ sonar_user }};"
+      become_user: postgres
+
+- name: Download and extract SonarQube
+  get_url:
+    url: "{{ sonarqube_url }}"
+    dest: "/tmp/sonarqube-{{ sonarqube_version }}.zip"
+
+- name: Extract SonarQube
+  unarchive:
+    src: "/tmp/sonarqube-{{ sonarqube_version }}.zip"
+    dest: /opt
+    remote_src: true
+
+- name: Configure SonarQube user and permissions
+  block:
+    - name: Create SonarQube group
+      group:
+        name: sonar
+
+    - name: Create SonarQube user
+      user:
+        name: sonar
+        group: sonar
+        home: /opt/sonarqube-{{ sonarqube_version }}
+        shell: /bin/bash
+
+    - name: Set permissions for SonarQube
+      file:
+        path: /opt/sonarqube-{{ sonarqube_version }}
+        state: directory
+        owner: sonar
+        group: sonar
+        recurse: yes
+
+- name: Configure SonarQube properties
+  template:
+    src: sonar.properties.j2
+    dest: /opt/sonarqube-{{ sonarqube_version }}/conf/sonar.properties
+    owner: sonar
+    group: sonar
+
+- name: Configure SonarQube systemd service
+  template:
+    src: sonar.service.j2
+    dest: /etc/systemd/system/sonar.service
+
+- name: Start and enable SonarQube service
+  systemd:
+    name: sonar
+    state: started
+    enabled: true

@@ -1,0 +1,17 @@
+---
+# vars file for sonar-role
+redhat_packages:
+  - java-17-openjdk
+  - java-17-openjdk-devel
+  - wget
+  - unzip
+  - postgresql
+  - postgresql-server
+
+ubuntu_packages:
+  - openjdk-17-jdk
+  - openjdk-17-jre
+  - wget
+  - unzip
+  - postgresql
+  - postgresql-contrib
