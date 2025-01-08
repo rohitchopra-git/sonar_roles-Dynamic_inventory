@@ -51,12 +51,12 @@
 
 # Configure PostgreSQL
 - name: Set PostgreSQL password
-  shell: "psql -c \"ALTER USER postgres PASSWORD '{{ postgres_password }}';\""
+  command: "psql -c \"ALTER USER postgres PASSWORD '{{ postgres_password }}';\""
   become: true
   become_user: postgres
   #chmod u+rw /tmp/ansible*  # Grant read-write access to temporary files created by Ansible
 
-    
+
 
 - name: Create SonarQube database user
   postgresql_user:
