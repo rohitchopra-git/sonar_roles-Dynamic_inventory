@@ -28,11 +28,11 @@
     state: present
   become: true
 
-- name: Add PostgreSQL key
-  apt_key:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    state: present
-  become: true
+# - name: Add PostgreSQL key
+#   apt_key:
+#     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+#     state: present
+#   become: true
 
 - name: Install PostgreSQL
   apt:
@@ -54,6 +54,9 @@
   shell: "psql -c \"ALTER USER postgres PASSWORD '{{ postgres_password }}';\""
   become: true
   become_user: postgres
+  chmod u+rw /tmp/ansible*  # Grant read-write access to temporary files created by Ansible
+
+    
 
 - name: Create SonarQube database user
   postgresql_user:
