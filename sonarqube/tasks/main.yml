@@ -13,54 +13,54 @@
       - openjdk-{{ java_version }}-jre
     state: present
 
-- name: Add PostgreSQL repository and key
-  apt_key:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    state: present
+# - name: Add PostgreSQL repository and key
+#   apt_key:
+#     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+#     state: present
 
-- name: Add PostgreSQL repository
-  copy:
-    dest: /etc/apt/sources.list.d/pgdg.list
-    content: "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main"
+# - name: Add PostgreSQL repository
+#   copy:
+#     dest: /etc/apt/sources.list.d/pgdg.list
+#     content: "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main"
 
-- name: Update package list
-  apt:
-    update_cache: yes
+# - name: Update package list
+#   apt:
+#     update_cache: yes
 
-- name: Install PostgreSQL
-  apt:
-    name:
-      - postgresql
-      - postgresql-contrib
-    state: present
+# - name: Install PostgreSQL
+#   apt:
+#     name:
+#       - postgresql
+#       - postgresql-contrib
+#     state: present
 
-- name: Start and enable PostgreSQL service
-  systemd:
-    name: postgresql
-    enabled: yes
-    state: started
+# - name: Start and enable PostgreSQL service
+#   systemd:
+#     name: postgresql
+#     enabled: yes
+#     state: started
 
-- name: Set PostgreSQL password for user postgres
-  postgresql_user:
-    name: postgres
-    password: "{{ postgresql_password }}"
-    state: present
+# - name: Set PostgreSQL password for user postgres
+#   postgresql_user:
+#     name: postgres
+#     password: "{{ postgresql_password }}"
+#     state: present
 
-- name: Create SonarQube user and database
-  postgresql_user:
-    name: sonar
-    password: "{{ sonarqube_user_password }}"
-    state: present
-  postgresql_db:
-    name: sonarqube
-    owner: sonar
-    state: present
-  postgresql_privilege:
-    user: sonar
-    database: sonarqube
-    table: "*"
-    type: ALL
-    state: present
+# - name: Create SonarQube user and database
+#   postgresql_user:
+#     name: sonar
+#     password: "{{ sonarqube_user_password }}"
+#     state: present
+#   postgresql_db:
+#     name: sonarqube
+#     owner: sonar
+#     state: present
+#   postgresql_privilege:
+#     user: sonar
+#     database: sonarqube
+#     table: "*"
+#     type: ALL
+#     state: present
 
 - name: Download SonarQube
   get_url:
@@ -90,15 +90,15 @@
     shell: /bin/bash
     state: present
 
-- name: Configure SonarQube properties
-  lineinfile:
-    path: /opt/sonarqube/conf/sonar.properties
-    create: yes
-    line: "{{ item }}"
-  with_items:
-    - sonar.jdbc.username=sonar
-    - sonar.jdbc.password={{ sonarqube_user_password }}
-    - sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+# - name: Configure SonarQube properties
+#   lineinfile:
+#     path: /opt/sonarqube/conf/sonar.properties
+#     create: yes
+#     line: "{{ item }}"
+#   with_items:
+#     - sonar.jdbc.username=sonar
+#     - sonar.jdbc.password={{ sonarqube_user_password }}
+#     - sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
 
 - name: Configure SonarQube service script
   lineinfile:
