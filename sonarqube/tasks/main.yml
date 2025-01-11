@@ -1,108 +1,106 @@
----
-
-    - name: Update apt cache
+- name: Update apt cache
       apt:
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Install required packages
-      apt:
-        name:
-          - openjdk-17-jre-headless
-          - wget
-          - unzip
-        state: present
+- name: Install required packages
+  apt:
+    name:
+      - openjdk-17-jre-headless
+      - wget
+      - unzip
+    state: present
 
-    - name: Create SonarQube group
-      group:
-        name: sonar
-        state: present
+- name: Create SonarQube group
+  group:
+    name: sonar
+    state: present
 
-    - name: Create SonarQube user
-      user:
-        name: sonar
-        group: sonar
-        create_home: yes
-        home: /opt/sonarqube
-        shell: /bin/bash
-        state: present
+- name: Create SonarQube user
+  user:
+    name: sonar
+    group: sonar
+    create_home: yes
+    home: /opt/sonarqube
+    shell: /bin/bash
+    state: present
 
-    - name: Download SonarQube
-      get_url:
-        url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.3.0.82913.zip # Replace with desired version
-        dest: /tmp/sonarqube.zip
+- name: Download SonarQube
+  get_url:
+    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.3.0.82913.zip # Replace with desired version
+    dest: /tmp/sonarqube.zip
 
-    - name: Create SonarQube directory
-      file:
-        path: /opt/sonarqube
-        state: directory
-        owner: sonar
-        group: sonar
-        mode: 0755
+- name: Create SonarQube directory
+  file:
+    path: /opt/sonarqube
+    state: directory
+    owner: sonar
+    group: sonar
+    mode: 0755
 
-    - name: Extract SonarQube
-      unarchive:
-        src: /tmp/sonarqube.zip
-        dest: /opt/
-        remote_src: yes
-        creates: /opt/sonarqube-10.3.0.82913 # Check if directory exists after extraction
-        owner: sonar
-        group: sonar
-      notify: rename_sonarqube_directory
+- name: Extract SonarQube
+  unarchive:
+    src: /tmp/sonarqube.zip
+    dest: /opt/
+    remote_src: yes
+    creates: /opt/sonarqube-10.3.0.82913 # Check if directory exists after extraction
+    owner: sonar
+    group: sonar
+  notify: rename_sonarqube_directory
 
-    - name: Remove the zip file
-      file:
-        path: /tmp/sonarqube.zip
-        state: absent
+- name: Remove the zip file
+  file:
+    path: /tmp/sonarqube.zip
+    state: absent
 
-    - name: Copy SonarQube configuration
-      copy:
-        src: files/sonar.properties # Create this file locally (see below)
-        dest: /opt/sonarqube/conf/sonar.properties
-        owner: sonar
-        group: sonar
-        mode: 0644
-      notify: restart_sonarqube
+- name: Copy SonarQube configuration
+  copy:
+    src: files/sonar.properties # Create this file locally (see below)
+    dest: /opt/sonarqube/conf/sonar.properties
+    owner: sonar
+    group: sonar
+    mode: 0644
+  notify: restart_sonarqube
 
-    - name: Create SonarQube systemd service file
-      copy:
-        src: files/sonarqube.service # Create this file locally (see below)
-        dest: /etc/systemd/system/sonarqube.service
-        owner: root
-        group: root
-        mode: 0644
-      notify:
-        - daemon_reload
-        - enable_sonarqube
-        - start_sonarqube
+- name: Create SonarQube systemd service file
+  copy:
+    src: files/sonarqube.service # Create this file locally (see below)
+    dest: /etc/systemd/system/sonarqube.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - daemon_reload
+    - enable_sonarqube
+    - start_sonarqube
 
-  handlers:
-    - name: rename_sonarqube_directory
-      file:
-        path: /opt/sonarqube-10.3.0.82913
-        dest: /opt/sonarqube
-        state: link
-        owner: sonar
-        group: sonar
-        force: yes
+handlers:
+- name: rename_sonarqube_directory
+  file:
+    path: /opt/sonarqube-10.3.0.82913
+    dest: /opt/sonarqube
+    state: link
+    owner: sonar
+    group: sonar
+    force: yes
 
-    - name: daemon_reload
-      systemd:
-        name: sonarqube
-        state: restarted
-        daemon_reload: yes
+- name: daemon_reload
+  systemd:
+    name: sonarqube
+    state: restarted
+    daemon_reload: yes
 
-    - name: enable_sonarqube
-      systemd:
-        name: sonarqube
-        enabled: yes
+- name: enable_sonarqube
+  systemd:
+    name: sonarqube
+    enabled: yes
 
-    - name: start_sonarqube
-      systemd:
-        name: sonarqube
-        state: started
+- name: start_sonarqube
+  systemd:
+    name: sonarqube
+    state: started
 
-    - name: restart_sonarqube
-      systemd:
-        name: sonarqube
-        state: restarted
+- name: restart_sonarqube
+  systemd:
+    name: sonarqube
+    state: restarted
