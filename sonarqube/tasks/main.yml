@@ -62,17 +62,19 @@
 #     type: ALL
 #     state: present
 
+
 - name: Download SonarQube
-  get_url:
+  uri:
     url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonarqube_version }}.zip
     dest: /tmp/sonarqube.zip
-    remote_path: yes
+    status_code: [200, 206]
 
 - name: Extract SonarQube
   unarchive:
     src: /tmp/sonarqube.zip
     dest: /opt
     extra_opts: unzip,keep_existing
+
 
 - name: Move SonarQube directory
   file:
