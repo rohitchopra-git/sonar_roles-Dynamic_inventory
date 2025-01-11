@@ -52,6 +52,15 @@
   file:
     path: /tmp/sonarqube.zip
     state: absent
+- name: Create SonarQube conf directory
+      file:
+        path: /opt/sonarqube/conf
+        state: directory
+        owner: sonar
+        group: sonar
+        mode: 0755
+      become: true
+      become_user: sonar
 
 - name: Copy SonarQube configuration
   copy:
