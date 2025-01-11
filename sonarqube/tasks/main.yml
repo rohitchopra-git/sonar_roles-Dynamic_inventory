@@ -61,7 +61,22 @@
     mode: 0755
     #become: true
     #become_user: sonar
-
+- name: Copy SonarQube all
+  copy:
+    src: /opt/sonarqube-10.3.0.82913/*
+    dest: /opt/sonarqube/
+    owner: sonar
+    group: sonar
+    mode: 0644
+  notify: restart_sonarqube
+- name: Copy SonarQube configuration
+  copy:
+    src: files/sonar.properties # Create this file locally (see below)
+    dest: /opt/sonarqube/conf/sonar.properties
+    owner: sonar
+    group: sonar
+    mode: 0644
+  notify: restart_sonarqube
 - name: Copy SonarQube configuration
   copy:
     src: files/sonar.properties # Create this file locally (see below)
