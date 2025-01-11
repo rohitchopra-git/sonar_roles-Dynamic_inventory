@@ -76,6 +76,7 @@
     owner: sonar
     group: sonar
     mode: 0644
+    remotesrc: yes
   notify: restart_sonarqube
 - name: Copy SonarQube configuration
   copy:
