@@ -59,8 +59,8 @@
     owner: sonar
     group: sonar
     mode: 0755
-    become: true
-    become_user: sonar
+    #become: true
+    #become_user: sonar
 
 - name: Copy SonarQube configuration
   copy:
