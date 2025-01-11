@@ -78,17 +78,23 @@
     src: /opt/sonarqube-{{ sonarqube_version }}
     dest: /opt/sonarqube
     state: link
-
 - name: Create SonarQube user and group
-  group:
-    name: sonar
-    state: present
-  user:
-    name: sonar
-    group: sonar
-    home: /opt/sonarqube
-    shell: /bin/bash
-    state: present
+  hosts: all
+  become: yes
+  tasks:
+- name: Create SonarQube group
+      group:
+        name: sonar
+        state: present
+
+    - name: Create SonarQube user
+      user:
+        name: sonar
+        group: sonar
+        home: /opt/sonarqube
+        shell: /bin/bash
+        state: present
+
 
 # - name: Configure SonarQube properties
 #   lineinfile:
