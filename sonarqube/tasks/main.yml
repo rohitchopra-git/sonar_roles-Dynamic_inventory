@@ -66,6 +66,7 @@
   get_url:
     url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonarqube_version }}.zip
     dest: /tmp/sonarqube.zip
+    remote_path: yes
 
 - name: Extract SonarQube
   unarchive:
