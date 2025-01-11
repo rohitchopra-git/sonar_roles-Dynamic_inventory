@@ -1,5 +1,31 @@
 ---
-- name: restart sonarqube
-  service:
-    name: sonar
+- name: rename_sonarqube_directory
+  file:
+    path: /opt/sonarqube-10.3.0.82913
+    dest: /opt/sonarqube
+    state: link
+    owner: sonar
+    group: sonar
+    force: yes
+
+- name: daemon_reload
+  systemd:
+    name: sonarqube
     state: restarted
+    daemon_reload: yes
+
+- name: enable_sonarqube
+  systemd:
+    name: sonarqube
+    enabled: yes
+
+- name: start_sonarqube
+  systemd:
+    name: sonarqube
+    state: started
+
+- name: restart_sonarqube
+  systemd:
+    name: sonarqube
+    state: restarted
+
