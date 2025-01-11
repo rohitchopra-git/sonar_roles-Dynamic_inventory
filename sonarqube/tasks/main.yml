@@ -80,9 +80,9 @@
     state: link
 
 - name: Create SonarQube user and group
-  #hosts: all
+  hosts: all
   become: yes
-  tasks:
+   tasks:
     - name: Create SonarQube group
       group:
         name: sonar
