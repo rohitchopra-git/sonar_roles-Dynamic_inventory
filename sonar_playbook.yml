@@ -3,5 +3,8 @@
     hosts: all
     become: true
     remote_user: ubuntu
-    roles:
-      - sonarqube
+    tasks:
+    - name: Run a remote shell script
+      ansible.builtin.shell: sonar.sh
+    # roles:
+    #   - sonarqube
