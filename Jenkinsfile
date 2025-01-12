@@ -27,7 +27,7 @@ pipeline {
                     // Specify the correct SSH user (e.g., "ubuntu" for Ubuntu-based EC2 instances)
                     sh 'ansible all -i aws_ec2.yml -u ubuntu -m ping --private-key $SSH_PRIVATE_KEY'
                     // Run the sonar Ansible playbook with the sonar role applied
-                    sh 'sudo ansible-playbook -i aws_ec2.yml sonar_playbook.yml --private-key $SSH_PRIVATE_KEY'
+                    sh 'ansible-playbook -i aws_ec2.yml sonar_playbook.yml --private-key $SSH_PRIVATE_KEY'
                     //sh 'ansible-playbook -i aws_ec2.yml sonar_playbook.yml --private-key $SSH_PRIVATE_KEY -vvv'
 
                 }
