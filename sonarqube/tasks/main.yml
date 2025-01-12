@@ -61,13 +61,13 @@
     mode: 0755
     #become: true
     #become_user: sonar
-# - name: Copy SonarQube all
-#   copy:
-#     src: /opt/sonarqube-10.3.0.82913/*
-#     dest: /opt/sonarqube/
-#     owner: sonar
-#     group: sonar
-#     mode: 0644
+- name: Copy SonarQube all
+  copy:
+    src: /opt/sonarqube-10.3.0.82913/bin/linux-x86-64/sonar.sh
+    dest: /opt/sonarqube/
+    owner: sonar
+    group: sonar
+    mode: 0644
   notify: restart_sonarqube
 - name: Copy SonarQube configuration
   copy:
