@@ -7,9 +7,9 @@ Type=forking
 User=sonar
 Group=sonar
 WorkingDirectory=/opt/sonarqube
-ExecStart=/opt/sonarqube/bin/linux/sonar.sh start
-ExecStop=/opt/sonarqube/bin/linux/sonar.sh stop
-PIDFile=/opt/sonarqube/temp/sonarqube.pid
+ExecStart=/opt/sonarqube-10.3.0.82913/bin/linux/sonar.sh start
+ExecStop=/opt/sonarqube-10.3.0.82913/bin/linux/sonar.sh stop
+PIDFile=/optsonarqube-10.3.0.82913/temp/sonarqube.pid
 LimitNOFILE=131072
 TimeoutSec=300
 
