@@ -1,19 +1,14 @@
 ---
-# - name: rename_sonarqube_directory
-#   file:
-#     path: /opt/sonarqube-10.3.0.82913
-#     dest: /opt/sonarqube
-#     state: link
-#     owner: sonar
-#     group: sonar
-#     force: yes
-
-- name: Copy file to destination
-  ansible.builtin.copy:
-    src: /opt/sonarqube-10.3.0.82913
+- name: rename_sonarqube_directory
+  file:
+    path: /opt/sonarqube-10.3.0.82913
     dest: /opt/sonarqube
-  remote_src: yes
-  become: yes
+    state: link
+    owner: sonar
+    group: sonar
+    force: yes
+
+
 
 - name: daemon_reload
   systemd:
