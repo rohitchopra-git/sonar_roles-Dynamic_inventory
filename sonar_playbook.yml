@@ -4,6 +4,15 @@
     become: true
     remote_user: ubuntu
     tasks:
+    - name: Copy the file to the remote host
+      ansible.builtin.copy:
+        src: ./sonar.sh  
+        dest: /home/ubuntu
+        mode: 0755 
+    - name: Ensure execute permissions 
+      ansible.builtin.file:
+        path: /home/ubuntu/sonar.sh
+        mode: a+x 
     - name: Run a remote shell script
       ansible.builtin.shell: sonar.sh
     # roles:
