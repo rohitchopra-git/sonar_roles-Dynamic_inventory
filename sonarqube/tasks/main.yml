@@ -68,6 +68,7 @@
     owner: sonar
     group: sonar
     mode: 0644
+    become_user: sonar
   notify: restart_sonarqube
 - name: Copy SonarQube configuration
   copy:
