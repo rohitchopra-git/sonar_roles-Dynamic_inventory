@@ -78,6 +78,7 @@
     group: sonar
     mode: 0644
     remotesrc: yes
+    become: yes
   notify: restart_sonarqube
 - name: Copy SonarQube configuration
   copy:
@@ -95,6 +96,7 @@
     owner: root
     group: root
     mode: 0644
+    become: yes
   notify:
     - daemon_reload
     - enable_sonarqube
