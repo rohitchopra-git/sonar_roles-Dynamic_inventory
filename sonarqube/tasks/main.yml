@@ -70,6 +70,7 @@
 #     mode: 0644
 #     become_user: sonar
 #   notify: restart_sonarqube
+
 - name: Copy SonarQube configuration
   copy:
     src: files/sonar.properties # Create this file locally (see below)
@@ -77,16 +78,7 @@
     owner: sonar
     group: sonar
     mode: 0644
-    remotesrc: yes
-    become: yes
-  notify: restart_sonarqube
-- name: Copy SonarQube configuration
-  copy:
-    src: files/sonar.properties # Create this file locally (see below)
-    dest: /opt/sonarqube/conf/sonar.properties
-    owner: sonar
-    group: sonar
-    mode: 0644
+    become_user: sonar
   notify: restart_sonarqube
 
 - name: Create SonarQube systemd service file
