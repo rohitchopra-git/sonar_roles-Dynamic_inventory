@@ -15,23 +15,23 @@
     name: sonarqube
     state: restarted
     daemon_reload: yes
-    become_user: sonar
+    become: yes
 
 - name: enable_sonarqube
   systemd:
     name: sonarqube
     enabled: yes
-    become_user: sonar
+    become: yes
 
 - name: start_sonarqube
   systemd:
     name: sonarqube
     state: started
-    become_user: sonar
-
+    become: yes
+    
 - name: restart_sonarqube
   systemd:
     name: sonarqube
     state: restarted
-    become_user: sonar
+    become: yes
 
